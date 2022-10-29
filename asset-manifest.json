@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/goit-node-REST-API-HW/static/css/main.b5320759.css",
+    "main.js": "/goit-node-REST-API-HW/static/js/main.b9e90056.js",
+    "index.html": "/goit-node-REST-API-HW/index.html",
+    "main.b5320759.css.map": "/goit-node-REST-API-HW/static/css/main.b5320759.css.map",
+    "main.b9e90056.js.map": "/goit-node-REST-API-HW/static/js/main.b9e90056.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b5320759.css",
+    "static/js/main.b9e90056.js"
+  ]
+}
