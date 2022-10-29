@@ -1,0 +1,3 @@
+RewriteEngine On 
+RewriteBase / 
+RewriteRule ^(.*)$ http://site.com/index.html [L,R=permanent]
