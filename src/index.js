@@ -26,3 +26,13 @@ ReactDOM.createRoot(document.getElementById('page-root')).render(
     {/* </ThemeProvider> */}
   </React.StrictMode>
 );
+
+
+/*
+
+  //   "react": "^18.1.0",
+  //   "react-dom": "^18.1.0",
+  //   "react-scripts": "5.0.1"
+  // },
+
+  */

@@ -4,12 +4,16 @@
   "private": true,
   "homepage": "https://aegisvp.github.io/goit-node-REST-API-HW/",
   "dependencies": {
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-scripts": "5.0.1"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
+    "node": "nodemon /node/node.js",
     "build": "react-scripts build",
     "lint:js": "eslint src/**/*.{js,jsx}"
   },
@@ -30,5 +34,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
