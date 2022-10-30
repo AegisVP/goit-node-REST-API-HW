@@ -1,8 +1,8 @@
 const path = require("path");
 
-const CONST = {
+const CONF = {
 	fileEncoding: "utf8",
 	defaultPath: path.resolve("./db/contacts.json"),
 };
 
-module.exports = CONST;
+module.exports = CONF;

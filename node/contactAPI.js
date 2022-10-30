@@ -1,5 +1,5 @@
 const db = require('./handleFile.js');
-const CONST = require('./constants.js');
+const CONF = require('./config.js');
 
 function listContacts() {
   return db.readData();
@@ -19,7 +19,7 @@ function deleteContact(id) {
 
   if (contacts.length === newContactsList.length) return 404;
 
-  db.writeData(CONST.defaultPath, newContactsList);
+  db.writeData(CONF.defaultPath, newContactsList);
   return 200;
 }
 
@@ -27,7 +27,7 @@ function addContact(contact) {
   const contacts = db.readData();
   contacts.push(contact);
 
-  db.writeData(CONST.defaultPath, contacts);
+  db.writeData(CONF.defaultPath, contacts);
   return true;
 }
 

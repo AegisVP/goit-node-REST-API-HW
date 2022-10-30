@@ -1,12 +1,12 @@
 const fs = require('fs');
-const CONST = require('./constants.js');
+const CONF = require('./config.js');
 
-const readData = (filePath = CONST.defaultPath) => {
-  return JSON.parse(fs.readFileSync(filePath, CONST.fileEncoding));
+const readData = (filePath = CONF.defaultPath) => {
+  return JSON.parse(fs.readFileSync(filePath, CONF.fileEncoding));
 };
 
-const writeData = (filePath = CONST.defaultPath, fileContents = '') => {
-  return fs.writeFileSync(filePath, JSON.stringify(fileContents), CONST.fileEncoding);
+const writeData = (filePath = CONF.defaultPath, fileContents = '') => {
+  return fs.writeFileSync(filePath, JSON.stringify(fileContents), CONF.fileEncoding);
 };
 
 module.exports = { readData, writeData };
