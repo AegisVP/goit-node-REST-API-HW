@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "node": "nodemon /node/node.js",
+    "node": "nodemon ./node/node.js",
     "build": "react-scripts build",
     "lint:js": "eslint src/**/*.{js,jsx}"
   },
