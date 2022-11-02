@@ -15,30 +15,9 @@ const doReturn = (result, res) => {
 
 router.get('/', async (_, res) => doReturn(await listContacts(), res));
 
-// router.get('/', async (_, res) => {
-//   const result = await listContacts();
-//
-//   if (result.status === 'success') return res.status(200).send(result.data);
-//   else return res.status(404).send(message('Not found'));
-// });
-
 router.get('/:id', async (req, res) => doReturn(await getContactById(req.params.id), res));
 
-// router.get('/:id', async (req, res) => {
-//   const result = await getContactById(req.params.id);
-//
-//   if (result.status === 'success') return res.status(200).send(result.data);
-//   else return res.status(404).send(message('Not found'));
-// });
-
 router.delete('/:id', async (req, res) => doReturn(await deleteContact(req.params.id), res));
-
-// router.delete('/:id', async (req, res) => {
-//   const result = await deleteContact(req.params.id);
-//
-//   if (result.status === 'success') return res.status(200).send(result.data);
-//   else return res.status(404).send(message('Not found'));
-// });
 
 router.post('/', async (req, res) => {
   const { name, email, phone } = req.body;
@@ -76,7 +55,6 @@ router.put('/:id', async (req, res) => {
   }
 
   const result = await updateContact(id, { name, email, phone });
-  console.log('result:', result);
 
   if (result.status === 'success') return res.status(200).send(result.data);
   return res.status(404).send(message('Not found'));
@@ -91,7 +69,6 @@ router.patch('/:id', async (req, res) => {
   if (joiValidatePhone.validate(phone).error) return res.status(400).send(message('Error validating phone field'));
 
   const result = await updateContact(id, { name, email, phone });
-  console.log('result:', result);
 
   if (result.status === 'success') return res.status(200).send(result.data);
   else return res.status(404).send(message('Not found'));

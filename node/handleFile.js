@@ -1,4 +1,3 @@
-// const { writeFile, readFileSync } = require('fs');
 const { writeFile, readFile } = require('fs').promises;
 const { success, failure } = require('./utils/generateReturnObject.js');
 const CONF = require('./config.js');

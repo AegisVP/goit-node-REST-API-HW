@@ -52,7 +52,6 @@ const updateContact = async (id, newContactData) => {
   }
 
   contacts.splice(contactIndex, 1, contact);
-  console.log('resulting contact:', contact);
 
   try {
     await db.writeData(contacts);
