@@ -1,47 +1,84 @@
 const db = require('./handleFile.js');
-const CONF = require('./config.js');
+const { success, failure } = require('./utils/generateReturnObject.js');
 
-function listContacts() {
-  return db.readData();
-}
+let contacts = [];
 
-function getContactById(id) {
-  const contacts = db.readData();
+const listContacts = async () => {
+  const res = await db.readData();
+
+  if (res.status === 'success') {
+    contacts = res.data;
+    return success(res.data);
+  } else {
+    contacts = [];
+    return failure([]);
+  }
+};
+
+const getContactById = async id => {
+  if (contacts.length <= 0) await listContacts();
+
   const contact = contacts.filter(contact => String(contact.id) === String(id));
 
-  if (contact.length === 0) return null;
-  return contact;
-}
+  if (contact.length > 0) {
+    return success(contact);
+  } else {
+    return failure('Not found');
+  }
+};
 
-function deleteContact(id) {
-  const contacts = db.readData();
-  const newContactsList = contacts.filter(contact => String(contact.id) !== String(id));
+const addContact = async contact => {
+  if (contacts.length <= 0) await listContacts();
 
-  if (contacts.length === newContactsList.length) return 404;
+  try {
+    contacts.push(contact);
+    return success(await db.writeData(contacts));
+  } catch (error) {
+    console.error(error);
+    return failure(error);
+  }
+};
 
-  db.writeData(CONF.defaultPath, newContactsList);
-  return 200;
-}
+const updateContact = async (id, newContactData) => {
+  if (contacts.length <= 0) await listContacts();
 
-function addContact(contact) {
-  const contacts = db.readData();
-  contacts.push(contact);
+  const contactIndex = contacts.findIndex(contact => String(contact.id) === String(id));
+  if (contactIndex < 0) return failure('Not found');
 
-  db.writeData(CONF.defaultPath, contacts);
-  return true;
-}
+  const contact = contacts[contactIndex];
 
-function updateContact(id, contact) {
-  const savedContactData = getContactById(id);
-  if (savedContactData === null) return 404;
+  for (const field in contacts[contactIndex]) {
+    if (newContactData[field]) contact[field] = newContactData[field];
+  }
 
-  const newContact = { ...savedContactData[0] };
-  for (const field in contact) if (contact[field]) newContact[field] = contact[field];
+  contacts.splice(contactIndex, 1, contact);
+  console.log('resulting contact:', contact);
 
-  deleteContact(id);
-  addContact(newContact);
+  try {
+    await db.writeData(contacts);
+    return success(contacts[contactIndex]);
+  } catch (error) {
+    console.error(error);
+    return failure(error);
+  }
+};
 
-  return newContact;
-}
+const deleteContact = async id => {
+  if (contacts.length <= 0) await listContacts();
 
-module.exports = { listContacts, getContactById, deleteContact, addContact, updateContact };
+  const contactIndex = contacts.findIndex(contact => String(contact.id) === String(id));
+  if (contactIndex < 0) return failure('Not found');
+
+  try {
+    const deletedContact = contacts[contactIndex];
+    contacts.splice(contactIndex, 1);
+
+    await db.writeData(contacts);
+    return success(deletedContact);
+  } catch (error) {
+    console.error(error);
+    return failure(error);
+  }
+};
+
+module.exports = { listContacts, getContactById, addContact, deleteContact, updateContact };
