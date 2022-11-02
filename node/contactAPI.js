@@ -1,5 +1,5 @@
 const db = require('./handleFile.js');
-const { success, failure } = require('./utils/generateReturnObject.js');
+const { generateSuccessData, generateFailureData } = require('./utils/generateReturnObject.js');
 
 let contacts = [];
 
@@ -8,10 +8,10 @@ const listContacts = async () => {
 
   if (res.status === 'success') {
     contacts = res.data;
-    return success(res.data);
+    return generateSuccessData(res.data);
   } else {
     contacts = [];
-    return failure([]);
+    return generateFailureData([]);
   }
 };
 
@@ -21,9 +21,9 @@ const getContactById = async id => {
   const contact = contacts.filter(contact => String(contact.id) === String(id));
 
   if (contact.length > 0) {
-    return success(contact);
+    return generateSuccessData(contact);
   } else {
-    return failure('Not found');
+    return generateFailureData('Not found');
   }
 };
 
@@ -32,10 +32,10 @@ const addContact = async contact => {
 
   try {
     contacts.push(contact);
-    return success(await db.writeData(contacts));
+    return generateSuccessData(await db.writeData(contacts));
   } catch (error) {
     console.error(error);
-    return failure(error);
+    return generateFailureData(error);
   }
 };
 
@@ -43,7 +43,7 @@ const updateContact = async (id, newContactData) => {
   if (contacts.length <= 0) await listContacts();
 
   const contactIndex = contacts.findIndex(contact => String(contact.id) === String(id));
-  if (contactIndex < 0) return failure('Not found');
+  if (contactIndex < 0) return generateFailureData('Not found');
 
   const contact = contacts[contactIndex];
 
@@ -55,10 +55,10 @@ const updateContact = async (id, newContactData) => {
 
   try {
     await db.writeData(contacts);
-    return success(contacts[contactIndex]);
+    return generateSuccessData(contacts[contactIndex]);
   } catch (error) {
     console.error(error);
-    return failure(error);
+    return generateFailureData(error);
   }
 };
 
@@ -66,17 +66,17 @@ const deleteContact = async id => {
   if (contacts.length <= 0) await listContacts();
 
   const contactIndex = contacts.findIndex(contact => String(contact.id) === String(id));
-  if (contactIndex < 0) return failure('Not found');
+  if (contactIndex < 0) return generateFailureData('Not found');
 
   try {
     const deletedContact = contacts[contactIndex];
     contacts.splice(contactIndex, 1);
 
     await db.writeData(contacts);
-    return success(deletedContact);
+    return generateSuccessData(deletedContact);
   } catch (error) {
     console.error(error);
-    return failure(error);
+    return generateFailureData(error);
   }
 };
 

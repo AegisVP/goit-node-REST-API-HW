@@ -1,5 +1,4 @@
-const success = data => ({ status: 'success', data });
-const failure = data => ({ status: 'error', data });
-const message = msg => ({ message: msg });
+const generateSuccessData = data => ({ status: 'success', data });
+const generateFailureData = data => ({ status: 'error', data });
 
-module.exports = { success, failure, message };
+module.exports = { generateSuccessData, generateFailureData };
