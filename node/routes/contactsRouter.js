@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
 const { listContacts, getContactById, addContact, updateContact, deleteContact } = require('../contactAPI.js');
-const { message } = require('../utils/generateReturnObject.js');
+const { message, failure } = require('../utils/generateReturnObject.js');
 
 const joiValidateName = Joi.string().alphanum().min(1);
 const joiValidateEmail = Joi.string().email();
@@ -35,8 +35,12 @@ router.post('/', async (req, res) => {
     return res.status(400).send(message(`Error validating the ${errMsg.join(delim)} field${ending}`));
   }
 
-  await addContact(newContact);
-  return res.status(200).send(newContact);
+  try {
+    await addContact(newContact);
+    return res.status(201).send(newContact);
+  } catch (error) {
+    return res.status(500).send(failure(`Server error: ${error}`));
+  }
 });
 
 router.put('/:id', async (req, res) => {
@@ -54,10 +58,14 @@ router.put('/:id', async (req, res) => {
     return res.status(400).send(message(`Error validating the ${errMsg.join(delim)} field${ending}`));
   }
 
-  const result = await updateContact(id, { name, email, phone });
+  try {
+    const result = await updateContact(id, { name, email, phone });
 
-  if (result.status === 'success') return res.status(200).send(result.data);
-  return res.status(404).send(message('Not found'));
+    if (result.status === 'success') return res.status(200).send(result.data);
+    return res.status(404).send(message('Not found'));
+  } catch (error) {
+    return res.status(500).send(failure(`Server error: ${error}`));
+  }
 });
 
 router.patch('/:id', async (req, res) => {
@@ -68,10 +76,14 @@ router.patch('/:id', async (req, res) => {
   if (joiValidateEmail.validate(email).error) return res.status(400).send(message('Error validating email field'));
   if (joiValidatePhone.validate(phone).error) return res.status(400).send(message('Error validating phone field'));
 
-  const result = await updateContact(id, { name, email, phone });
+  try {
+    const result = await updateContact(id, { name, email, phone });
 
-  if (result.status === 'success') return res.status(200).send(result.data);
-  else return res.status(404).send(message('Not found'));
+    if (result.status === 'success') return res.status(200).send(result.data);
+    else return res.status(404).send(message('Not found'));
+  } catch (error) {
+    return res.status(500).send(failure(`Server error: ${error}`));
+  }
 });
 
 module.exports = router;
