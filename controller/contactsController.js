@@ -1,89 +1,74 @@
 const Joi = require('joi');
 
-const { generateSuccessData, generateFailureData } = require('../utils/generateReturnObject');
+const { generateFailureData, createNotFoundHttpError } = require('../utils');
 const { Contacts, defaultFavorite } = require('../model/contactsModel');
 
-const joiValidateName = Joi.string().alphanum().min(1);
-const joiValidateEmail = Joi.string().email();
-const joiValidatePhone = Joi.string().min(5);
-const joiValidateFavorite = Joi.boolean();
+const contactValidateSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string().min(5).required(),
+  favorite: Joi.boolean(),
+});
 
-async function getContacts(_, res) {
+async function getContacts(_, res, next) {
   const contacts = await Contacts.find();
 
-  return res.json(generateSuccessData(contacts));
+  return res.json(contacts);
 }
 
-async function createContact(req, res) {
-  const { name, email, phone, favorite } = req.body;
+async function createContact(req, res, next) {
+  const { name, email, phone, favorite = defaultFavorite } = req.body;
+  const newContact = { name, email, phone, favorite };
 
   // validating fields
-  let errMsg = [];
-  if (joiValidateName.validate(name, { presence: 'required' }).error) errMsg.push('name');
-  if (joiValidateEmail.validate(email, { presence: 'required' }).error) errMsg.push('email');
-  if (joiValidatePhone.validate(phone, { presence: 'required' }).error) errMsg.push('phone');
-  if (joiValidateFavorite.validate(favorite).error) errMsg.push('favorite');
-
-  // if one or more validations fail, generate error message and return
-  if (errMsg.length > 0) {
-    const delim = errMsg.length === 2 ? ' and ' : ', ';
-    const ending = errMsg.length > 1 ? 's' : '';
-    const errorMessageString = `Error validating the ${errMsg.join(delim)} field${ending}`;
-    return res.status(400).send(generateFailureData(errorMessageString));
-  }
+  const { error } = contactValidateSchema.validate(newContact);
+  if (error) return res.status(400).send(generateFailureData(error.message));
 
   // create contact
-  const savedContact = await Contacts.create({ name, email, phone, favorite });
+  const savedContact = await Contacts.create(newContact);
 
-  return res.status(201).send(generateSuccessData(savedContact));
+  return res.status(201).send(savedContact);
 }
 
-async function getContactById(req, res) {
+async function getContactById(req, res, next) {
   const { id } = req.params;
   const contact = await Contacts.findById(id);
 
-  if (contact === null) return res.status(404).json(generateFailureData());
+  console.log(contact);
+  if (contact === null) {
+    return next(createNotFoundHttpError());
+  }
 
-  return res.json(generateSuccessData(contact));
+  return res.json(contact);
 }
 
-async function deleteContactById(req, res) {
+async function deleteContactById(req, res, next) {
   const { id } = req.params;
   const result = await Contacts.findByIdAndDelete(id);
 
-  if (result === null) return res.status(404).json(generateFailureData());
+  if (result === null) return next(generateNotFoundHttpError());
 
-  return res.json(generateSuccessData(result));
+  return res.json(result);
 }
 
-async function updateContactById(req, res) {
-  const { name, email, phone, favorite } = req.body;
+async function updateContactById(req, res, next) {
+  const { name, email, phone, favorite = defaultFavorite } = req.body;
   const { id } = req.params;
 
   //Validating fields
-  let errMsg = [];
-  if (joiValidateName.validate(name, { presence: 'required' }).error) errMsg.push('name');
-  if (joiValidateEmail.validate(email, { presence: 'required' }).error) errMsg.push('email');
-  if (joiValidatePhone.validate(phone, { presence: 'required' }).error) errMsg.push('phone');
-  if (joiValidateFavorite.validate(favorite, { presence: 'required' }).error) errMsg.push('favorite');
-
-  if (errMsg.length > 0) {
-    const delim = errMsg.length === 2 ? ' and ' : ', ';
-    const ending = errMsg.length > 1 ? 's' : '';
-    const errorMessageString = `Error validating the ${errMsg.join(delim)} field${ending}`;
-    return res.status(400).send(generateFailureData(errorMessageString));
-  }
+  const { error } = contactValidateSchema.validate(newContact);
+  if (error) return res.status(400).send(generateFailureData(error.message));
 
   const result = await Contacts.updateOne({ _id: id }, { name, email, phone, favorite });
   const { matchedCount } = result;
 
-  if (matchedCount == 0) return res.status(404).json(generateFailureData('No records matched'));
+  if (matchedCount == 0) return next(generateNotFoundHttpError());
   return res.status(200).json({ _id: id, name, email, phone, favorite });
 }
 
-async function toggleFavorite(req, res) {
+async function toggleFavorite(req, res, next) {
   const { id } = req.params;
-  const { favorite } = req.body;
+  const { favorite = defaultFavorite } = req.body;
 
   // validating field "favorite"
   if (joiValidateFavorite.validate(favorite, { presence: 'required' }).error)
@@ -94,7 +79,7 @@ async function toggleFavorite(req, res) {
 
   // checking if request matched no records
   const { matchedCount } = result;
-  if (matchedCount == 0) return res.status(404).json(generateFailureData('No records matched'));
+  if (matchedCount == 0) return next(generateNotFoundHttpError());
 
   // getting other fields from database
   const contact = await Contacts.findById(id);

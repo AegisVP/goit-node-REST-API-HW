@@ -1,7 +1,7 @@
 const contactsRouter = require('express').Router();
 
 const contactsController = require('../controller/contactsController');
-const { tryCatchWrapper } = require('../utils/tryCatchWrapper');
+const { tryCatchWrapper } = require('../utils');
 
 contactsRouter.get('/', tryCatchWrapper(contactsController.getContacts));
 contactsRouter.post('/', tryCatchWrapper(contactsController.createContact));

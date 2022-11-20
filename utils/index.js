@@ -1,4 +1,4 @@
-const { generateFailureData } = require('./generateReturnObject');
+const generateFailureData = data => ({ status: 'error', data });
 
 function tryCatchWrapper(callFn) {
   return async (req, res, next) => {
@@ -12,4 +12,10 @@ function tryCatchWrapper(callFn) {
   };
 }
 
-module.exports = { tryCatchWrapper };
+function createNotFoundHttpError() {
+  const err = new Error('Not found');
+  err.status = 404;
+  return err;
+}
+
+module.exports = { generateFailureData, tryCatchWrapper, createNotFoundHttpError };
