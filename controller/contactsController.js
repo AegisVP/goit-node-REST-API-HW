@@ -47,7 +47,7 @@ async function updateContactById(req, res, next) {
   const { matchedCount } = result;
 
   if (matchedCount == 0) return next(generateNotFoundHttpError());
-  return res.status(200).json({ _id: id, name, email, phone, favorite });
+  return res.json({ _id: id, name, email, phone, favorite });
 }
 
 async function toggleFavorite(req, res, next) {
@@ -66,7 +66,7 @@ async function toggleFavorite(req, res, next) {
   console.log(contact);
 
   // returning user object
-  return res.status(200).json(contact);
+  return res.json(contact);
 }
 
 module.exports = {
