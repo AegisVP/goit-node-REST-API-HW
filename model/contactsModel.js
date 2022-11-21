@@ -2,25 +2,31 @@ const mongoose = require('mongoose');
 
 const defaultFavorite = false;
 
-const contactSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const contactSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    favorite: {
+      type: Boolean,
+      default: defaultFavorite,
+      required: true,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  favorite: {
-    type: Boolean,
-    default: defaultFavorite,
-    required: true,
-  },
-});
+  {
+    versionKey: false,
+    timestamps: true,
+  }
+);
 
 const Contacts = mongoose.model('contacts', contactSchema);
 

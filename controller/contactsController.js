@@ -1,14 +1,6 @@
-const Joi = require('joi');
 
 const { generateFailureData, createNotFoundHttpError } = require('../utils');
-const { Contacts, defaultFavorite } = require('../model/contactsModel');
-
-const contactValidateSchema = Joi.object({
-  name: Joi.string().min(1).required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().min(5).required(),
-  favorite: Joi.boolean(),
-});
+const { Contacts, defaultFavorite } = require('../model');
 
 async function getContacts(_, res, next) {
   const contacts = await Contacts.find();
@@ -18,16 +10,12 @@ async function getContacts(_, res, next) {
 
 async function createContact(req, res, next) {
   const { name, email, phone, favorite = defaultFavorite } = req.body;
-  const newContact = { name, email, phone, favorite };
-
-  // validating fields
-  const { error } = contactValidateSchema.validate(newContact);
-  if (error) return res.status(400).send(generateFailureData(error.message));
 
   // create contact
-  const savedContact = await Contacts.create(newContact);
+  const savedContact = await Contacts.create({ name, email, phone, favorite });
+  console.log(savedContact);
 
-  return res.status(201).send(savedContact);
+  if (savedContact) return res.status(201).send(savedContact);
 }
 
 async function getContactById(req, res, next) {
@@ -55,10 +43,6 @@ async function updateContactById(req, res, next) {
   const { name, email, phone, favorite = defaultFavorite } = req.body;
   const { id } = req.params;
 
-  //Validating fields
-  const { error } = contactValidateSchema.validate(newContact);
-  if (error) return res.status(400).send(generateFailureData(error.message));
-
   const result = await Contacts.updateOne({ _id: id }, { name, email, phone, favorite });
   const { matchedCount } = result;
 
@@ -69,10 +53,6 @@ async function updateContactById(req, res, next) {
 async function toggleFavorite(req, res, next) {
   const { id } = req.params;
   const { favorite = defaultFavorite } = req.body;
-
-  // validating field "favorite"
-  if (joiValidateFavorite.validate(favorite, { presence: 'required' }).error)
-    return res.status(400).send(generateFailureData('Error validating field favorite'));
 
   // updating field "favorite"
   const result = await Contacts.updateOne({ _id: id }, { favorite });
