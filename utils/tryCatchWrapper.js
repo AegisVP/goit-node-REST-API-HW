@@ -5,7 +5,7 @@ function tryCatchWrapper(callFn) {
     try {
       await callFn(req, res, next);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
       next(err);
     }
   };

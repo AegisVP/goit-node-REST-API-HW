@@ -14,7 +14,7 @@ app.use('/api/contacts', contactsRouter);
 app.use((_, res) => res.status(404).json({ message: 'Not Found' }));
 
 app.use((err, req, res, next) => {
-  console.error(`app error: ${err.message}, ${err.name}`);
+  console.error(`App error handler: [${err.name}] - ${err.message}`);
 
   if (err.name === 'CastError' || err.name === 'ValidationError') {
     return res.status(400).json({
