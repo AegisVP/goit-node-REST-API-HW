@@ -1,19 +1,17 @@
-
-const { generateFailureData, createNotFoundHttpError } = require('../utils');
+const { createNotFoundHttpError } = require('../utils');
 const { Contacts, defaultFavorite } = require('../model');
 
-async function getContacts(_, res, next) {
+async function getContacts(_, res) {
   const contacts = await Contacts.find();
 
   return res.json(contacts);
 }
 
-async function createContact(req, res, next) {
+async function createContact(req, res) {
   const { name, email, phone, favorite = defaultFavorite } = req.body;
 
   // create contact
   const savedContact = await Contacts.create({ name, email, phone, favorite });
-  console.log(savedContact);
 
   if (savedContact) return res.status(201).send(savedContact);
 }
@@ -22,32 +20,28 @@ async function getContactById(req, res, next) {
   const { id } = req.params;
   const contact = await Contacts.findById(id);
 
-  console.log(contact);
-  if (contact === null) {
-    return next(createNotFoundHttpError());
-  }
+  if (!contact) return next(createNotFoundHttpError());
 
   return res.json(contact);
 }
 
 async function deleteContactById(req, res, next) {
   const { id } = req.params;
-  const result = await Contacts.findByIdAndDelete(id);
+  const contact = await Contacts.findByIdAndDelete(id);
 
-  if (result === null) return next(generateNotFoundHttpError());
+  if (!contact) return next(createNotFoundHttpError());
 
-  return res.json(result);
+  return res.json(contact);
 }
 
 async function updateContactById(req, res, next) {
   const { name, email, phone, favorite = defaultFavorite } = req.body;
   const { id } = req.params;
+  const contact = await Contacts.findByIdAndUpdate(id, { name, email, phone, favorite }, { new: true });
 
-  const result = await Contacts.updateOne({ _id: id }, { name, email, phone, favorite });
-  const { matchedCount } = result;
+  if (!contact) return next(createNotFoundHttpError());
 
-  if (matchedCount == 0) return next(generateNotFoundHttpError());
-  return res.json({ _id: id, name, email, phone, favorite });
+  return res.json(contact);
 }
 
 async function toggleFavorite(req, res, next) {
@@ -55,15 +49,10 @@ async function toggleFavorite(req, res, next) {
   const { favorite = defaultFavorite } = req.body;
 
   // updating field "favorite"
-  const result = await Contacts.updateOne({ _id: id }, { favorite });
+  const contact = await Contacts.findByIdAndUpdate(id, { favorite }, { new: true });
 
   // checking if request matched no records
-  const { matchedCount } = result;
-  if (matchedCount == 0) return next(generateNotFoundHttpError());
-
-  // getting other fields from database
-  const contact = await Contacts.findById(id);
-  console.log(contact);
+  if (!contact) return next(createNotFoundHttpError());
 
   // returning user object
   return res.json(contact);
