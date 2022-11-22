@@ -5,6 +5,7 @@
 .vscode/
 .idea/
 .VSCode
+.env
 
 # dependencies
 /node_modules
