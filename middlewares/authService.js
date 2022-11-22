@@ -3,7 +3,6 @@ const { User } = require('../model');
 const { requestError } = require('../utils');
 
 async function authService(req, res, next) {
-  // try {
     if (!req?.headers['authorization']) return next(requestError(401, 'No Authorization header', 'NoAuthHeader'));
 
     const [authType, token] = req.headers['authorization'].split(' ');
@@ -20,15 +19,6 @@ async function authService(req, res, next) {
     req.user = dbUser;
 
     return next();
-  // } catch (error) {
-  //   console.error(error.message);
-  //   return next(requestError(500, 'Error', 'authServiceError'));
-  // }
 }
 
-function authMid(req, res, next) {
-  console.log("i'm alive!");
-  return next();
-}
-
-module.exports = { authService, authMid };
+module.exports = { authService };

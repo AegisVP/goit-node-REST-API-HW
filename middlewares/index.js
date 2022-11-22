@@ -1,4 +1,4 @@
 const { validationBody } = require('./validationBody');
-const { authService, authMid } = require('./authService');
+const { authService } = require('./authService');
 
-module.exports = { validationBody, authService, authMid };
+module.exports = { validationBody, authService };
