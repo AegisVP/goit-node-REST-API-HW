@@ -1,9 +1,11 @@
 const contactsRouter = require('express').Router();
 const { contactJoiSchemas } = require('../schemas');
 
-const { validationBody } = require('../middlewares');
+const { validationBody, authService } = require('../middlewares');
 const { contactsController } = require('../controller');
 const { tryCatchWrapper } = require('../utils');
+
+contactsRouter.use(authService);
 
 contactsRouter.get('/', tryCatchWrapper(contactsController.getContacts));
 contactsRouter.get('/:id', tryCatchWrapper(contactsController.getContactById));

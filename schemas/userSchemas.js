@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Joi = require('joi');
+
+const subscriptionTypes = ['starter', 'pro', 'business'];
 
 const userDbSchema = new mongoose.Schema(
   {
@@ -13,8 +16,8 @@ const userDbSchema = new mongoose.Schema(
     },
     subscription: {
       type: String,
-      enum: ['starter', 'pro', 'business'],
-      default: 'starter',
+      enum: subscriptionTypes,
+      default: subscriptionTypes[0],
     },
     token: {
       type: String,
@@ -32,4 +35,16 @@ userDbSchema.method('cryptPassword', async function () {
   return;
 });
 
-module.exports = { userDbSchema };
+const addSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).alphanum().required(),
+  subscription: Joi.string().valid(...subscriptionTypes),
+  token: Joi.string(),
+});
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+
+module.exports = { userDbSchema, userJoiSchemas: { addSchema, loginSchema } };
