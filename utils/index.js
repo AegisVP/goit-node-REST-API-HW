@@ -1,11 +1,9 @@
-const createNotFoundHttpError = require('./createNotFoundHttpError');
 const tryCatchWrapper = require('./tryCatchWrapper');
-const generateFailureData = require('./generateFailureData');
 const requestError = require('./requestError');
+const comparePassword = require('./comparePassword');
 
 module.exports = {
-  generateFailureData,
+  comparePassword,
   tryCatchWrapper,
-  createNotFoundHttpError,
   requestError,
 };

@@ -1,5 +1,3 @@
-const generateFailureData = require('./generateFailureData');
-
 function tryCatchWrapper(callFn) {
   return async (req, res, next) => {
     try {
