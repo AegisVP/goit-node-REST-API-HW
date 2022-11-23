@@ -4,6 +4,7 @@ const { userJoiSchemas } = require('../schemas');
 const { authController } = require('../controller');
 const { tryCatchWrapper } = require('../utils');
 
+authRouter.patch('/', validationBody(userJoiSchemas.subscriptionSchema), tryCatchWrapper(authController.updateSubscription));
 authRouter.post('/signup', validationBody(userJoiSchemas.addSchema), tryCatchWrapper(authController.registerUser));
 authRouter.post('/login', validationBody(userJoiSchemas.loginSchema), tryCatchWrapper(authController.loginUser));
 authRouter.post('/logout', tryCatchWrapper(authService), tryCatchWrapper(authController.logoutUser));

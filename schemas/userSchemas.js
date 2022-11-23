@@ -47,4 +47,9 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-module.exports = { userDbSchema, userJoiSchemas: { addSchema, loginSchema } };
+const subscriptionSchema = Joi.object({
+  _id: Joi.any().required(),
+  subscription: Joi.string().valid(...subscriptionTypes).required(),
+});
+
+module.exports = { userDbSchema, userJoiSchemas: { addSchema, loginSchema, subscriptionSchema } };
