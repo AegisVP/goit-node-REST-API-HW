@@ -1,10 +1,14 @@
 const { requestError } = require('../utils');
 const { Contacts, defaultFavorite } = require('../model');
 
-async function getContacts(req, res) {
-  const { page, limit, favorite } = req.query;
+const defaultLimit = 10;
 
-  const contacts = await Contacts.find(favorite === undefined ? null : { favorite })
+async function getContacts(req, res) {
+  let { page = 1, limit = defaultLimit, favorite } = req.query;
+  page = parseInt(page >= 1 ? page : 1);
+  limit = parseInt(limit <= defaultLimit ? limit : defaultLimit);
+
+  const contacts = await Contacts.find(favorite === undefined ? null : { favorite: Boolean(favorite) })
     .limit(limit)
     .skip((page - 1) * limit);
 
