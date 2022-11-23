@@ -47,12 +47,9 @@ async function currentUser(req, res, next) {
 }
 
 async function updateSubscription(req, res, next) {
-  const { _id, subscription } = req.body;
+  const { subscription } = req.body;
 
-  if (!_id) return next(requestError(400, 'Incorrect ID', 'NoID'));
-
-  const result = await User.findByIdAndUpdate(_id, { subscription }, { new: true });
-  if (!result) return next(requestError(404, 'Not found', 'NoUserFound'));
+  const result = await User.findByIdAndUpdate(req.user._id, { subscription }, { new: true });
 
   return res.json({ email: result.email, subscription: result.subscription });
 }

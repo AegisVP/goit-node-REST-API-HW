@@ -48,7 +48,6 @@ const loginSchema = Joi.object({
 });
 
 const subscriptionSchema = Joi.object({
-  _id: Joi.any().required(),
   subscription: Joi.string().valid(...subscriptionTypes).required(),
 });
 
