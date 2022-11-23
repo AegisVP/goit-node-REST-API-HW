@@ -1,8 +1,10 @@
 const { requestError } = require('../utils');
 const { Contacts, defaultFavorite } = require('../model');
 
-async function getContacts(_, res) {
-  const contacts = await Contacts.find();
+async function getContacts(req, res) {
+  const { page, limit } = req.query;
+
+  const contacts = await Contacts.find().limit(limit).skip(page * limit);
 
   return res.json(contacts);
 }
