@@ -8,9 +8,6 @@ const app = express();
 app.use(morgan('tiny'));
 app.use(express.json());
 
-// authenticate
-// require('./middlewares/auth');
-
 // define routes
 app.use('/api/contacts', contactsRouter);
 app.use('/api/users', userRouter);
