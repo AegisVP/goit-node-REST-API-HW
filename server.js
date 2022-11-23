@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { DB_HOST, SERVER_PORT = 8083 } = process.env;
+const { DB_HOST, SERVER_PORT = 8080 } = process.env;
 
 const { app } = require('./app');
 
