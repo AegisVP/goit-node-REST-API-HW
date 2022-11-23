@@ -6,7 +6,7 @@ async function getContacts(req, res) {
 
   const contacts = await Contacts.find(favorite === undefined ? null : { favorite })
     .limit(limit)
-    .skip(page * limit);
+    .skip((page - 1) * limit);
 
   return res.json(contacts);
 }
