@@ -1,6 +1,6 @@
 const { requestError } = require('../utils');
 
-const validationBody = schema => {
+module.exports = schema => {
   const func = async (req, _, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
 
@@ -11,5 +11,3 @@ const validationBody = schema => {
 
   return func;
 };
-
-module.exports = { validationBody };

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../model');
 const { requestError } = require('../utils');
 
-async function authService(req, res, next) {
+module.exports = async (req, res, next) => {
   if (!req?.headers['authorization']) return next(requestError(401, 'No Authorization header', 'NoAuthHeader'));
 
   const [authScheme, token] = req.headers['authorization'].split(' ');
@@ -21,6 +21,4 @@ async function authService(req, res, next) {
   req.user = dbUser;
 
   return next();
-}
-
-module.exports = { authService };
+};

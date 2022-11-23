@@ -1,4 +1,4 @@
-function tryCatchWrapper(callFn) {
+module.exports = callFn => {
   return async (req, res, next) => {
     try {
       await callFn(req, res, next);
@@ -7,6 +7,4 @@ function tryCatchWrapper(callFn) {
       next(err);
     }
   };
-}
-
-module.exports = tryCatchWrapper;
+};
