@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const { contactsRouter, authRouter } = require('./routes');
+const { contactsRouter, userRouter } = require('./routes');
 
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(express.json());
 
 // define routes
 app.use('/api/contacts', contactsRouter);
-app.use('/api/users', authRouter);
+app.use('/api/users', userRouter);
 
 app.use((_, res) => res.status(404).json({ message: 'Not Found' }));
 
