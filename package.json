@@ -10,7 +10,10 @@
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "png-jpg": "^0.0.2",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "start": "npx nodemon ./server.js"

@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const { contactsRouter, userRouter } = require('./routes');
+const { contactsRouter, userRouter, avatarRouter } = require('./routes');
 
 const app = express();
 
@@ -11,7 +11,9 @@ app.use(express.json());
 // define routes
 app.use('/api/contacts', contactsRouter);
 app.use('/api/users', userRouter);
+app.use('/avatars', avatarRouter);
 
+app.use('/', express.static('./public'));
 app.use((_, res) => res.status(404).json({ message: 'Not Found' }));
 
 app.use((err, req, res, next) => {
