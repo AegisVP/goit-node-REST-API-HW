@@ -31,19 +31,13 @@ async function loginUser(req, res, next) {
 }
 
 async function logoutUser(req, res, next) {
-  const user = await User.findById(req.user._id);
-  if (!user) return next(requestError(401, 'Not authorized', 'NoSuchUser'));
-
   await User.findByIdAndUpdate(req.user._id, { token: '' });
 
   return res.status(204).send();
 }
 
 async function currentUser(req, res, next) {
-  const user = await User.findById(req.user._id);
-  if (!user) return next(requestError(401, 'Not authorized', 'NoSuchUser'));
-
-  return res.json({ email: user.email, subscription: user.subscription });
+  return res.json({ email: req.user.email, subscription: req.user.subscription });
 }
 
 async function updateSubscription(req, res, next) {
