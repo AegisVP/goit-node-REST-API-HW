@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const { getHash } = require('../utils');
 
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -7,9 +8,9 @@ const avatarStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const fileExt = String(file.originalname.split('.').pop()).toLocaleLowerCase();
-    const savedFileName = `${req.user.id}.${fileExt}`;
-    cb(null, savedFileName);
+    const savedFileName = `${getHash(req.user.email)}.${fileExt}`;
 
+    cb(null, savedFileName);
     req.avatarFileName = savedFileName;
   },
 });

@@ -1,9 +1,13 @@
 const tryCatchWrapper = require('./tryCatchWrapper');
 const requestError = require('./requestError');
-const convertPngToJpg = require('./convertPngToJpg');
+const imageConvertFormat = require('./imageConvertFormat');
+const getHash = require('./getHash');
+const imageResize = require('./imageResize');
 
 module.exports = {
   tryCatchWrapper,
   requestError,
-  convertPngToJpg,
+  imageConvertFormat,
+  getHash,
+  imageResize,
 };
