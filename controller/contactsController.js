@@ -62,7 +62,7 @@ async function toggleFavorite(req, res, next) {
   // checking if request matched no records
   if (!contact) return next(requestError(404, 'No contacts found', 'NotFound'));
 
-  // returning user object
+  // returning contact object
   return res.json(contact);
 }
 
