@@ -1,17 +1,7 @@
-const {
-  getContacts,
-  createContact,
-  getContactById,
-  deleteContactById,
-  updateContactById,
-  toggleFavorite,
-} = require('./contactsController');
+const contactsController = require('./contactsController');
+const userController = require('./userController');
 
 module.exports = {
-  getContacts,
-  createContact,
-  getContactById,
-  deleteContactById,
-  updateContactById,
-  toggleFavorite,
+  contactsController,
+  userController,
 };

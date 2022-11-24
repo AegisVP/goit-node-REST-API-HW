@@ -1,36 +1,8 @@
 const mongoose = require('mongoose');
+const { contactDbSchema } = require('../schemas');
 
-const defaultFavorite = false;
-
-const contactSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    favorite: {
-      type: Boolean,
-      default: defaultFavorite,
-      required: true,
-    },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-  }
-);
-
-const Contacts = mongoose.model('contacts', contactSchema);
+const Contacts = mongoose.model('contacts', contactDbSchema);
 
 module.exports = {
   Contacts,
-  defaultFavorite,
 };

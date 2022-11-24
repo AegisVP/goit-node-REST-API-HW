@@ -4,18 +4,16 @@
   "private": true,
   "homepage": "https://aegisvp.github.io/goit-node-REST-API-HW/",
   "dependencies": {
-    "cors": "^2.8.5",
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "joi": "^17.7.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
     "morgan": "^1.10.0"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.20"
-  },
   "scripts": {
-    "start": "nodemon ./server.js"
+    "start": "npx nodemon ./server.js"
   },
   "browserslist": {
     "production": [

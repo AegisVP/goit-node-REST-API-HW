@@ -1,15 +1,13 @@
 const { requestError } = require('../utils');
 
-const validationBody = schema => {
+module.exports = schema => {
   const func = async (req, _, next) => {
-    const { error } = schema.validate(req.body, { abortEarly: false, allowUnknown: true });
+    const { error } = schema.validate(req.body, { abortEarly: false });
 
-    if (error) next(requestError(400, error.message, 'ValidationError'));
+    if (error) return next(requestError(400, error.message, 'ValidationError'));
 
-    next();
+    return next();
   };
 
   return func;
 };
-
-module.exports = { validationBody };

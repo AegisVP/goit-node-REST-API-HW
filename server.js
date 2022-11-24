@@ -14,7 +14,7 @@ async function connectMongoose() {
 
 async function main() {
   try {
-    await connectMongoose();
+    connectMongoose();
 
     app.listen(SERVER_PORT, () => {
       console.log(`Server is listening: http://127.0.0.1:${SERVER_PORT}`);

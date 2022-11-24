@@ -1,3 +1,4 @@
-const { addSchema, favoriteSchema } = require('./contactJoiSchemas');
+const { contactDbSchema, contactJoiSchemas } = require('./contactSchemas');
+const { userDbSchema, userJoiSchemas } = require('./userSchemas');
 
-module.exports = { addSchema, favoriteSchema };
+module.exports = { userDbSchema, userJoiSchemas, contactDbSchema, contactJoiSchemas };
