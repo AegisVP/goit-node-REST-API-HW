@@ -4,7 +4,7 @@ const { getHash } = require('../utils');
 
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.resolve('./public/avatars'));
+    cb(null, path.resolve(process.env.UPLOAD_PATH));
   },
   filename: (req, file, cb) => {
     const fileExt = String(file.originalname.split('.').pop()).toLocaleLowerCase();

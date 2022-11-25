@@ -2,7 +2,8 @@ const Jimp = require('jimp');
 const newSize = 250;
 
 module.exports = async imagePath => {
-  const fullImagePath = `./public/avatars/${imagePath}`;
+  const fullImagePath = `${process.env.UPLOAD_PATH}${imagePath}`;
+  
   const image = await Jimp.read(fullImagePath);
   image
     .resize(newSize, newSize) // resize

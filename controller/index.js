@@ -1,9 +1,4 @@
-const contactsController = require('./contactsController');
-const userController = require('./userController');
-const fileController = require('./fileController');
-
 module.exports = {
-  contactsController,
-  userController,
-  fileController,
+  contactsController: require('./contactsController'),
+  userController: require('./userController'),
 };

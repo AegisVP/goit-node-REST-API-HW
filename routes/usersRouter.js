@@ -1,7 +1,7 @@
 const userRouter = require('express').Router();
 const { validationBody, authService, avatarUploadMiddleware } = require('../middlewares');
 const { userJoiSchemas } = require('../schemas');
-const { userController, fileController } = require('../controller');
+const { userController } = require('../controller');
 const { tryCatchWrapper } = require('../utils');
 
 userRouter.post('/signup', validationBody(userJoiSchemas.addSchema), tryCatchWrapper(userController.registerUser));
@@ -12,6 +12,6 @@ userRouter.use(tryCatchWrapper(authService));
 userRouter.patch('/', validationBody(userJoiSchemas.subscriptionSchema), tryCatchWrapper(userController.updateSubscription));
 userRouter.post('/logout', tryCatchWrapper(userController.logoutUser));
 userRouter.get('/current', tryCatchWrapper(userController.currentUser));
-userRouter.post('/avatars', [tryCatchWrapper(authService), tryCatchWrapper(avatarUploadMiddleware.single('avatar'))], tryCatchWrapper(fileController.uploadAvatar));
+userRouter.patch('/avatars', [tryCatchWrapper(authService), tryCatchWrapper(avatarUploadMiddleware.single('avatar'))], tryCatchWrapper(userController.uploadAvatar));
 
 module.exports = userRouter;
