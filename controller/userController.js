@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const fs = require('fs').promises;
 const bcrypt = require('bcrypt');
-const { requestError } = require('../utils');
+const { requestError, createDefaultAvatar, imageResize } = require('../utils');
 const { User } = require('../model');
 
 async function registerUser(req, res, next) {
@@ -9,9 +10,10 @@ async function registerUser(req, res, next) {
   if (await User.findOne({ email })) return next(requestError(409, 'Email is already in use', 'Conflict'));
 
   const newUser = new User(req.body);
+  newUser.avatarURL = await createDefaultAvatar(email);
   await newUser.cryptPassword();
-
   await newUser.save();
+
   return res.status(201).json({ user: { email, subscription: newUser.subscription } });
 }
 
@@ -48,4 +50,25 @@ async function updateSubscription(req, res, next) {
   return res.json({ email: result.email, subscription: result.subscription });
 }
 
-module.exports = { registerUser, loginUser, logoutUser, currentUser, updateSubscription };
+const uploadAvatar = async (req, res, next) => {
+  let avatarFileName = req.avatarFileName;
+
+  fs.rm(`${process.env.AVATAR_PATH}${req.user.avatarURL}`).catch(() => {
+    return;
+  });
+
+  await imageResize(avatarFileName);
+  await fs.rename(`${process.env.UPLOAD_PATH}${avatarFileName}`, `${process.env.AVATAR_PATH}${avatarFileName}`);
+
+  await User.findByIdAndUpdate(req.user._id, { avatarURL: avatarFileName });
+  res.json({ avatarURL: avatarFileName });
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  currentUser,
+  updateSubscription,
+  uploadAvatar,
+};

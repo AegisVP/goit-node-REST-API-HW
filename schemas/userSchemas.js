@@ -23,6 +23,7 @@ const userDbSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    avatarURL: String,
   },
   {
     versionKey: false,
@@ -40,6 +41,7 @@ const addSchema = Joi.object({
   password: Joi.string().min(6).alphanum().required(),
   subscription: Joi.string().valid(...subscriptionTypes),
   token: Joi.string(),
+  avatarURL: Joi.string(),
 });
 
 const loginSchema = Joi.object({

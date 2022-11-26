@@ -1,4 +1,5 @@
-const validationBody = require('./validationBody');
-const authService = require('./authService');
-
-module.exports = { validationBody, authService };
+module.exports = {
+  validationBody: require('./validationBody'),
+  authService: require('./authService'),
+  avatarUploadMiddleware: require('./avatarUploadMiddleware'),
+};

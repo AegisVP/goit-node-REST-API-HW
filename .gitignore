@@ -6,6 +6,7 @@
 .idea/
 .VSCode
 .env
+/public/avatars/*
 
 # dependencies
 /node_modules

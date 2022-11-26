@@ -1,7 +1,7 @@
-const tryCatchWrapper = require('./tryCatchWrapper');
-const requestError = require('./requestError');
-
 module.exports = {
-  tryCatchWrapper,
-  requestError,
+  tryCatchWrapper: require('./tryCatchWrapper'),
+  requestError: require('./requestError'),
+  getHash: require('./getHash'),
+  imageResize: require('./imageResize'),
+  createDefaultAvatar: require('./createDefaultAvatar'),
 };
