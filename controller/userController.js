@@ -1,18 +1,29 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs').promises;
 const bcrypt = require('bcrypt');
-const { requestError, createDefaultAvatar, imageResize } = require('../utils');
+const { v4: uuid } = require('uuid');
+
+const { requestError, createDefaultAvatar, imageResize, mailtrap, generateRegistrationEmail, generateWelcomeEmail } = require('../utils');
 const { User } = require('../model');
+
+function createNewVerificationToken() {
+  return uuid();
+}
 
 async function registerUser(req, res, next) {
   const { email } = req.body;
+  const verificationToken = createNewVerificationToken();
 
   if (await User.findOne({ email })) return next(requestError(409, 'Email is already in use', 'Conflict'));
 
   const newUser = new User(req.body);
   newUser.avatarURL = await createDefaultAvatar(email);
+  newUser.verificationToken = verificationToken;
   await newUser.cryptPassword();
   await newUser.save();
+
+  //TODO: send verification email
+  await mailtrap.sendEmail(mailtrap.generateRegistrationEmail({ email, verificationToken }));
 
   return res.status(201).json({ user: { email, subscription: newUser.subscription } });
 }
@@ -25,7 +36,10 @@ async function loginUser(req, res, next) {
 
   if (!(await bcrypt.compare(password, user.password))) return next(requestError(401, 'Unable to login', 'WrongPassword'));
 
-  const { _id, subscription } = user;
+  const { _id, subscription = false } = user;
+
+  if (!user.isVerified) return next(requestError(401, 'Verify your email', 'EmailNotVerified'));
+
   const token = jwt.sign({ _id, email, subscription }, process.env.JWT_SECRET);
   await User.findByIdAndUpdate(_id, { token });
 
@@ -61,7 +75,30 @@ const uploadAvatar = async (req, res, next) => {
   await fs.rename(`${process.env.UPLOAD_PATH}${avatarFileName}`, `${process.env.AVATAR_PATH}${avatarFileName}`);
 
   await User.findByIdAndUpdate(req.user._id, { avatarURL: avatarFileName });
-  res.json({ avatarURL: avatarFileName });
+  return res.json({ avatarURL: avatarFileName });
+};
+
+const verifyUserEmail = async (req, res, next) => {
+  const { verificationToken } = req.params;
+  
+  const user = await User.findOneAndUpdate({ verificationToken }, { isVerified: true, verificationToken: '' }, { new: true });
+  if (!user) return next(requestError(404, 'User not found', 'NoVerifyToken'));
+
+  mailtrap.sendEmail(mailtrap.generateWelcomeEmail({ email: user.email }));
+  return res.status(200).json({ message: 'Verification successful' });
+};
+
+const resendVerificationEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return next(requestError(404, 'User not found', 'NoUserFound'));
+
+  const { isVerified, verificationToken } = user;
+  if (isVerified) return next(requestError(400, 'Already verified', 'UserIsVerified'));
+
+  mailtrap.sendEmail(mailtrap.generateRegistrationEmail({ email, verificationToken }));
+  res.json({ message: 'Verification email sent' });
 };
 
 module.exports = {
@@ -71,4 +108,6 @@ module.exports = {
   currentUser,
   updateSubscription,
   uploadAvatar,
+  verifyUserEmail,
+  resendVerificationEmail,
 };
