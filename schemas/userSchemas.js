@@ -23,7 +23,17 @@ const userDbSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    avatarURL: String,
+    avatarURL: {
+      type: String,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      default: '',
+    },
   },
   {
     versionKey: false,
@@ -42,6 +52,8 @@ const addSchema = Joi.object({
   subscription: Joi.string().valid(...subscriptionTypes),
   token: Joi.string(),
   avatarURL: Joi.string(),
+  isVerified: Joi.boolean(),
+  verificationToken: Joi.string(),
 });
 
 const loginSchema = Joi.object({
@@ -53,4 +65,8 @@ const subscriptionSchema = Joi.object({
   subscription: Joi.string().valid(...subscriptionTypes).required(),
 });
 
-module.exports = { userDbSchema, userJoiSchemas: { addSchema, loginSchema, subscriptionSchema } };
+const verifyEmailSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+module.exports = { userDbSchema, userJoiSchemas: { addSchema, loginSchema, subscriptionSchema, verifyEmailSchema } };

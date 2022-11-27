@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { DB_HOST, SERVER_PORT = 8080 } = process.env;
 
+const { mailInterface } = require('./utils');
 const { app } = require('./app');
 
 async function connectMongoose() {
@@ -12,8 +13,13 @@ async function connectMongoose() {
   console.log(`Connected to MongoDB`);
 }
 
+function connectMail() {
+  mailInterface.verify();
+}
+
 async function main() {
   try {
+    connectMail();
     connectMongoose();
 
     app.listen(SERVER_PORT, () => {

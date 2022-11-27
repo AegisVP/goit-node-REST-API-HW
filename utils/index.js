@@ -4,4 +4,6 @@ module.exports = {
   getHash: require('./getHash'),
   imageResize: require('./imageResize'),
   createDefaultAvatar: require('./createDefaultAvatar'),
+  // mailInterface: require('./nodemailer'),
+  mailInterface: require('./sendgrid'),
 };

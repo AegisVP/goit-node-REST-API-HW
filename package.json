@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://aegisvp.github.io/goit-node-REST-API-HW/",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",
     "blueimp-md5": "^2.19.0",
     "dotenv": "^16.0.3",
@@ -15,6 +16,7 @@
     "mongoose": "^6.7.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.8.0",
     "png-jpg": "^0.0.2"
   },
   "devDependencies": {
