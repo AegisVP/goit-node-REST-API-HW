@@ -1,19 +1,9 @@
-const nodemailer = require('nodemailer');
-const requestError = require('./requestError');
-
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER,
-  port: process.env.EMAIL_PORT,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const sgMail = require('@sendgrid/mail');
 
 const generateRegistrationEmail = ({ email, verificationToken }) => {
   const verificationLink = `http://127.0.0.1:${process.env.SERVER_PORT}/api/users/verify/${verificationToken}`;
   const message = {
-    from: 'phonebook@goit_hw.com',
+    from: 'vlad@pysarenko.com',
     to: email,
     subject: 'Verify your account',
     text: `
@@ -32,7 +22,7 @@ const generateRegistrationEmail = ({ email, verificationToken }) => {
 
 const generateWelcomeEmail = ({ email }) => {
   const message = {
-    from: 'phonebook@goit_hw.com',
+    from: 'vlad@pysarenko.com',
     to: email,
     subject: 'Welcome to our service',
     text: `Welcome to our service.`,
@@ -43,8 +33,10 @@ const generateWelcomeEmail = ({ email }) => {
 };
 
 const sendEmail = async message => {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
   try {
-    await transporter.sendMail(message);
+    await sgMail.send(message);
     return;
   } catch (err) {
     console.error('Verification e-mail not sent. Error:', err);
@@ -52,8 +44,12 @@ const sendEmail = async message => {
   }
 };
 
+const verify = () => {
+  console.log('SendGrid is ready');
+};
+
 module.exports = {
-  transporter,
+  verify,
   generateRegistrationEmail,
   generateWelcomeEmail,
   sendEmail,

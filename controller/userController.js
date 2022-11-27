@@ -3,7 +3,7 @@ const fs = require('fs').promises;
 const bcrypt = require('bcrypt');
 const { v4: uuid } = require('uuid');
 
-const { requestError, createDefaultAvatar, imageResize, mailtrap, generateRegistrationEmail, generateWelcomeEmail } = require('../utils');
+const { requestError, createDefaultAvatar, imageResize, mailInterface } = require('../utils');
 const { User } = require('../model');
 
 function createNewVerificationToken() {
@@ -23,7 +23,7 @@ async function registerUser(req, res, next) {
   await newUser.save();
 
   //TODO: send verification email
-  await mailtrap.sendEmail(mailtrap.generateRegistrationEmail({ email, verificationToken }));
+  await mailInterface.sendEmail(mailInterface.generateRegistrationEmail({ email, verificationToken }));
 
   return res.status(201).json({ user: { email, subscription: newUser.subscription } });
 }
@@ -80,11 +80,11 @@ const uploadAvatar = async (req, res, next) => {
 
 const verifyUserEmail = async (req, res, next) => {
   const { verificationToken } = req.params;
-  
+
   const user = await User.findOneAndUpdate({ verificationToken }, { isVerified: true, verificationToken: '' }, { new: true });
   if (!user) return next(requestError(404, 'User not found', 'NoVerifyToken'));
 
-  mailtrap.sendEmail(mailtrap.generateWelcomeEmail({ email: user.email }));
+  mailInterface.sendEmail(mailInterface.generateWelcomeEmail({ email: user.email }));
   return res.status(200).json({ message: 'Verification successful' });
 };
 
@@ -97,7 +97,7 @@ const resendVerificationEmail = async (req, res, next) => {
   const { isVerified, verificationToken } = user;
   if (isVerified) return next(requestError(400, 'Already verified', 'UserIsVerified'));
 
-  mailtrap.sendEmail(mailtrap.generateRegistrationEmail({ email, verificationToken }));
+  mailInterface.sendEmail(mailInterface.generateRegistrationEmail({ email, verificationToken }));
   res.json({ message: 'Verification email sent' });
 };
 

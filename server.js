@@ -1,8 +1,8 @@
 require('dotenv').config();
 const { DB_HOST, SERVER_PORT = 8080 } = process.env;
 
+const { mailInterface } = require('./utils');
 const { app } = require('./app');
-const { mailtrap } = require('./utils');
 
 async function connectMongoose() {
   const mongoose = require('mongoose');
@@ -13,16 +13,13 @@ async function connectMongoose() {
   console.log(`Connected to MongoDB`);
 }
 
-function connectMailtrap() {
-  mailtrap.transporter.verify((error, success) => {
-    if (error) console.error('email system error:', error);
-    else console.log('email system is ready:', success);
-  });
+function connectMail() {
+  mailInterface.verify();
 }
 
 async function main() {
   try {
-    connectMailtrap();
+    connectMail();
     connectMongoose();
 
     app.listen(SERVER_PORT, () => {
