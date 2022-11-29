@@ -6,9 +6,7 @@ const { v4: uuid } = require('uuid');
 const { requestError, createDefaultAvatar, imageResize, mailInterface } = require('../utils');
 const { User } = require('../model');
 
-function createNewVerificationToken() {
-  return uuid();
-}
+const createNewVerificationToken = () => uuid();
 
 async function registerUser(req, res, next) {
   const { email } = req.body;
@@ -22,7 +20,6 @@ async function registerUser(req, res, next) {
   await newUser.cryptPassword();
   await newUser.save();
 
-  //TODO: send verification email
   await mailInterface.sendEmail(mailInterface.generateRegistrationEmail({ email, verificationToken }));
 
   return res.status(201).json({ user: { email, subscription: newUser.subscription } });
